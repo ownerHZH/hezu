@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Roommates</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="menu_settings">Settings</string>
+    <string name="facebook">Facebook</string>
+    <string name="twitter">Twitter</string>
+    <string name="google">Google</string>
+    <string name="linkedin">LinkedIn</string>
+    <string name="wordpress">Wordpress</string>
+    <string name="myspace">Myspace</string>
+    <string name="title_activity_show_detail">ShowDetail</string>
+    <string name="title_activity_settlement">Settlement</string>
+
+</resources>
