@@ -1,5 +1,5 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:circle="http://schemas.android.com/apk/res/com.example.roommates"
+    xmlns:circle="http://schemas.android.com/apk/res/com.owner.roommates"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -15,7 +15,7 @@
         android:layout_centerHorizontal="true"
         android:background="@drawable/jiesuan_btn_press"/>
 
-    <com.example.roommates.CircleLayout
+    <com.owner.roommates.CircleLayout
         android:id="@+id/main_circle_layout"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
@@ -68,7 +68,7 @@
             android:layout_height="wrap_content"
             android:src="@drawable/icon_wordpress"
             circle:name="@string/wordpress" /> -->
-    </com.example.roommates.CircleLayout>
+    </com.owner.roommates.CircleLayout>
 
     <TextView
         android:id="@+id/main_selected_textView"

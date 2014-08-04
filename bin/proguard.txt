@@ -1,0 +1,12 @@
+# view res/layout/activity_main.xml #generated:18
+-keep class com.owner.roommates.CircleLayout { <init>(...); }
+
+# view AndroidManifest.xml #generated:16
+-keep class com.owner.roommates.MainActivity { <init>(...); }
+
+# view AndroidManifest.xml #generated:29
+-keep class com.owner.roommates.Settlement { <init>(...); }
+
+# view AndroidManifest.xml #generated:25
+-keep class com.owner.roommates.ShowDetail { <init>(...); }
+
