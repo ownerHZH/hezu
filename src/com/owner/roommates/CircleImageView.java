@@ -33,6 +33,24 @@ public class CircleImageView extends ImageView {
 	private float angle = 0;
 	private int position = 0;
 	private String name;
+	private boolean mStartScale=false;
+	private boolean mNeedScale=false;
+
+	public boolean ismStartScale() {
+		return mStartScale;
+	}
+
+	public void setmStartScale(boolean mStartScale) {
+		this.mStartScale = mStartScale;
+	}
+
+	public boolean ismNeedScale() {
+		return mNeedScale;
+	}
+
+	public void setmNeedScale(boolean mNeedScale) {
+		this.mNeedScale = mNeedScale;
+	}
 
 	public float getAngle() {
 		return angle;

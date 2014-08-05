@@ -31,10 +31,15 @@ import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
+import android.view.animation.Animation;
+import android.view.animation.Animation.AnimationListener;
+import android.view.animation.RotateAnimation;
+import android.view.animation.ScaleAnimation;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -53,7 +58,7 @@ public class MainActivity extends Activity implements OnItemSelectedListener, On
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		sqlManager=new SQLManager(context);
-		detail1=(Button) findViewById(R.id.detail1);
+		detail1=(Button) findViewById(R.id.detail1);	
 		
 		circleMenu = (CircleLayout)findViewById(R.id.main_circle_layout);
 		circleMenu.setOnItemSelectedListener(this);
@@ -161,61 +166,205 @@ public class MainActivity extends Activity implements OnItemSelectedListener, On
 	@SuppressLint("NewApi")
 	@Override
 	public void onItemClick(View view, int position, long id, String name) {		
-		//Toast.makeText(getApplicationContext(), " " + name, Toast.LENGTH_SHORT).show();
+		//Toast.makeText(getApplicationContext(), " " + name, Toast.LENGTH_SHORT).show();							
 		if(name.equals("添加"))
-		{
-			if(personTotal>8)
 			{
-				Toast.makeText(getApplicationContext(), "人数已达上限，不能再添加", Toast.LENGTH_SHORT).show();
+				if(personTotal>8)
+				{
+					Toast.makeText(getApplicationContext(), "人数已达上限，不能再添加", Toast.LENGTH_SHORT).show();
+				}else
+				{
+					final EditText editText=new EditText(context);
+					new AlertDialog.Builder(context)
+					.setTitle("请输入成员名称")
+					.setIcon(android.R.drawable.ic_dialog_info)
+					.setView(editText)
+					.setPositiveButton("确定", new OnClickListener() {
+						
+						@Override
+						public void onClick(DialogInterface arg0, int arg1) {
+							String n=editText.getText().toString().trim();
+							if(!n.isEmpty())
+							{
+								long l=sqlManager.addPerson(n);
+								createMenuItem(n,l+"",getResources().getColor(R.color.color0+(int)(l%8)));						
+								personTotal++;
+							}else{
+								Toast.makeText(getApplicationContext(), "名称不能为空！", Toast.LENGTH_SHORT).show();	
+							}			
+						}
+					})
+					.setNegativeButton("取消", null)
+					.show();
+				}		
 			}else
 			{
-				final EditText editText=new EditText(context);
-				new AlertDialog.Builder(context)
-				.setTitle("请输入成员名称")
-				.setIcon(android.R.drawable.ic_dialog_info)
-				.setView(editText)
-				.setPositiveButton("确定", new OnClickListener() {
-					
-					@Override
-					public void onClick(DialogInterface arg0, int arg1) {
-						String n=editText.getText().toString().trim();
-						if(!n.isEmpty())
-						{
-							long l=sqlManager.addPerson(n);
-							createMenuItem(n,l+"",getResources().getColor(R.color.color0+(int)(l%8)));						
-							personTotal++;
-						}else{
-							Toast.makeText(getApplicationContext(), "名称不能为空！", Toast.LENGTH_SHORT).show();	
-						}			
-					}
-				})
-				.setNegativeButton("取消", null)
-				.show();
-			}		
-		}else
-		{
-			//跳转
-			Intent i=new Intent(context, ShowDetail.class);
-			i.putExtra("searchName", name);
-			startActivity(i);
+				if(((CircleImageView) (view)).ismStartScale())
+				{
+					((CircleImageView) (view)).setmNeedScale(false);	
+					((CircleImageView) (view)).setmStartScale(false);
+				}
+				//跳转
+				Intent i=new Intent(context, ShowDetail.class);
+				i.putExtra("searchName", name);
+				startActivity(i);				
+			}
 		}
-		
-	}
 
 	@Override
-	public void onItemSelected(View view, int position, long id, String name) {
-		selectedTextView.setText(name);	
+	public void onItemSelected(View view, int position, long id, String name) {	
+		if(((CircleImageView) (view)).ismStartScale())
+		{			
+			((CircleImageView) (view)).setmNeedScale(false);	
+			((CircleImageView) (view)).setmStartScale(false);
+		}
+		selectedTextView.setText(name);		
 	}
 
 	@Override
 	public void onItemLongClick(View view, int position, long id, String name) {
 		if(!name.equals("添加"))
 		{
-			circleMenu.removeView((CircleImageView) (view));
-			sqlManager.removePerson(id+"");
-			Toast.makeText(getApplicationContext(), "删除  " + name, Toast.LENGTH_SHORT).show();
+			if (!((CircleImageView) (view)).ismStartScale())
+			{
+				((CircleImageView) (view)).setmNeedScale(true);
+				((CircleImageView) (view)).setmStartScale(true);
+				shakeAnimation(view);
+				selectedTextView.setText("再次长按删除");
+			}else
+			{
+				((CircleImageView) (view)).setmNeedScale(false);	
+				((CircleImageView) (view)).setmStartScale(false);
+				circleMenu.removeView((CircleImageView) (view));
+				sqlManager.removePerson(id+"");
+				selectedTextView.setText("");
+			}
+			
+			//circleMenu.removeView((CircleImageView) (view));
+			//sqlManager.removePerson(id+"");
+			//Toast.makeText(getApplicationContext(), "删除  " + name, Toast.LENGTH_SHORT).show();
 		}
 		
 	}
+	
+
+    private static final int ANIMATION_DURATION = 2000;
+    //private boolean mNeedShake = false;  
+    //private boolean mStartShake = false;
+    private void shakeAnimation(final View v) {  
+        /*float rotate = 0;  
+        int c = mCount++ % 5;  
+        if (c == 0) {  
+            rotate = DEGREE_0;  
+        } else if (c == 1) {  
+            rotate = DEGREE_1;  
+        } else if (c == 2) {  
+            rotate = DEGREE_2;  
+        } else if (c == 3) {  
+            rotate = DEGREE_3;  
+        } else {  
+            rotate = DEGREE_4;  
+        }*/ 
+        final ScaleAnimation sra =new ScaleAnimation(0.5f, 1.4f, 0.5f, 1.4f,   
+        		Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        final ScaleAnimation srb =new ScaleAnimation(1.4f,0.5f,1.4f,0.5f,    
+        		Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        /*final RotateAnimation mra = new RotateAnimation(rotate, -rotate, ICON_WIDTH * mDensity / 2, ICON_HEIGHT * mDensity / 2);  
+        final RotateAnimation mrb = new RotateAnimation(-rotate, rotate, ICON_WIDTH * mDensity / 2, ICON_HEIGHT * mDensity / 2);*/  
+  
+        /*mra.setDuration(ANIMATION_DURATION);  
+        mrb.setDuration(ANIMATION_DURATION);*/ 
+        sra.setDuration(ANIMATION_DURATION);
+        srb.setDuration(ANIMATION_DURATION);
+        
+        sra.setAnimationListener(new AnimationListener() {
+			
+			@Override
+			public void onAnimationStart(Animation arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void onAnimationRepeat(Animation arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void onAnimationEnd(Animation arg0) {
+				if (((CircleImageView) (v)).ismNeedScale()) {  
+                    sra.reset();  
+                    v.startAnimation(srb);  
+                }
+			}
+		});
+        srb.setAnimationListener(new AnimationListener() {
+			
+			@Override
+			public void onAnimationStart(Animation arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void onAnimationRepeat(Animation arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void onAnimationEnd(Animation arg0) {
+				if (((CircleImageView) (v)).ismNeedScale()) {  
+                    srb.reset();  
+                    v.startAnimation(sra);  
+                }
+			}
+		});
+  
+        /*mra.setAnimationListener(new AnimationListener() {  
+            @Override  
+            public void onAnimationEnd(Animation animation) {  
+                if (mNeedShake) {  
+                    mra.reset();  
+                    v.startAnimation(mrb);  
+                }  
+            }  
+  
+            @Override  
+            public void onAnimationRepeat(Animation animation) {  
+  
+            }  
+  
+            @Override  
+            public void onAnimationStart(Animation animation) {  
+  
+            }  
+  
+        });  
+  
+        mrb.setAnimationListener(new AnimationListener() {  
+            @Override  
+            public void onAnimationEnd(Animation animation) {  
+                if (mNeedShake) {  
+                    mrb.reset();  
+                    v.startAnimation(mra);  
+                }  
+            }  
+  
+            @Override  
+            public void onAnimationRepeat(Animation animation) {  
+  
+            }  
+  
+            @Override  
+            public void onAnimationStart(Animation animation) {  
+  
+            }  
+  
+        });*/  
+        //v.startAnimation(mra);
+        v.startAnimation(sra);
+    }
 
 }
