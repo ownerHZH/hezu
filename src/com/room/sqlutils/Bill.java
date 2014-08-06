@@ -7,6 +7,16 @@ public class Bill {
 	private String money;
 	private String date;
 	
+	public Bill(String id, String name, String item, String money, String date) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.item = item;
+		this.money = money;
+		this.date = date;
+	}
+	
+	public Bill(){}
 	public String getId() {
 		return id;
 	}

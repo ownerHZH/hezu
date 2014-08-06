@@ -148,6 +148,17 @@ public class ShowDetail extends Activity {
 			}
 			
 			List<Bill> bills=sqlManager.getBills(searchName,searchDate);
+			if(bills.size()>0)
+			{
+				Double totalMoney=0.0;
+				for(Bill b:bills)
+				{
+					totalMoney+=Double.parseDouble(b.getMoney());
+				}
+				Bill bill=new Bill("", "", "$ºÏ¼Æ$", totalMoney+"", "");
+				bills.add(bill);	
+			}
+			
 			data.setBills(bills);
 			
 			datas.add(data);

@@ -85,8 +85,14 @@ public class MainActivity extends Activity implements OnItemSelectedListener, On
 			
 			@Override
 			public void onClick(View arg0) {
-				Intent i=new Intent(MainActivity.this ,Settlement.class);
-				startActivity(i);
+				if(personTotal>0)
+				{
+					Intent i=new Intent(MainActivity.this ,Settlement.class);
+					startActivity(i);
+				}else
+				{
+					Toast.makeText(getApplicationContext(), "无成员，无结算", Toast.LENGTH_SHORT).show();
+				}
 			}
 		});
 	}
@@ -236,6 +242,7 @@ public class MainActivity extends Activity implements OnItemSelectedListener, On
 				((CircleImageView) (view)).setmNeedScale(false);	
 				((CircleImageView) (view)).setmStartScale(false);
 				circleMenu.removeView((CircleImageView) (view));
+				sqlManager.removeBillByPersonName(name);
 				sqlManager.removePerson(id+"");
 				selectedTextView.setText("");
 			}

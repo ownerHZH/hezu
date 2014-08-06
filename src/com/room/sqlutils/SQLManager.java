@@ -56,6 +56,13 @@ public class SQLManager {
 		db.delete(TABLE_DEVICE, "_id = '" + id + "'", null);
 		db.close();
 	}
+	//É¾
+	public void removeBillByPersonName(String name) {
+
+		SQLiteDatabase db = mDbHelper.getWritableDatabase();
+		db.delete(TABLE_DEVICE, "name = '" + name + "'", null);
+		db.close();
+	}
 	//²é
 	@SuppressLint("NewApi")
 	public List<Bill> getBills(String name) {
